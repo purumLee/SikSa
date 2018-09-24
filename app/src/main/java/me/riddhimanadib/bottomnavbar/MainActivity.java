@@ -16,10 +16,10 @@ public class MainActivity extends BottomBarHolderActivity implements FirstFragme
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        NavigationPage page1 = new NavigationPage("검색", ContextCompat.getDrawable(this, R.drawable.ic_home_black_24dp), FirstFragment.newInstance());
-        NavigationPage page2 = new NavigationPage("카테고리", ContextCompat.getDrawable(this, R.drawable.ic_mail_black_24dp), SecondFragment.newInstance());
-        NavigationPage page3 = new NavigationPage("캘린더", ContextCompat.getDrawable(this, R.drawable.ic_assessment_black_24dp), ThirdFragment.newInstance());
-        NavigationPage page4 = new NavigationPage("마이페이지", ContextCompat.getDrawable(this, R.drawable.ic_person_black_24dp), FourthFragment.newInstance());
+        NavigationPage page1 = new NavigationPage("검색", ContextCompat.getDrawable(this, R.drawable.ic_search), FirstFragment.newInstance());
+        NavigationPage page2 = new NavigationPage("카테고리", ContextCompat.getDrawable(this, R.drawable.ic_category), SecondFragment.newInstance());
+        NavigationPage page3 = new NavigationPage("캘린더", ContextCompat.getDrawable(this, R.drawable.ic_calendar), ThirdFragment.newInstance());
+        NavigationPage page4 = new NavigationPage("마이페이지", ContextCompat.getDrawable(this, R.drawable.ic_my), FourthFragment.newInstance());
 
         List<NavigationPage> navigationPages = new ArrayList<>();
         navigationPages.add(page1);
