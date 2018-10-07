@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">식 사</string>
+    <string name="serving_wt">1회 제공량</string>
+    <string name="nutr_cont1">열량</string>
+    <string name="nutr_cont2">탄수화물</string>
+    <string name="nutr_cont3">단백질</string>
+    <string name="nutr_cont4">지방</string>
+    <string name="nutr_cont5">당류</string>
+    <string name="nutr_cont6">나트륨</string>
+    <string name="nutr_cont7">콜레스테롤</string>
+    <string name="nutr_cont8">포화지방산</string>
+    <string name="nutr_cont9">트랜스지방산</string>
+    <string name="animal_plant">가공업체</string>
 </resources>

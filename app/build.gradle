@@ -20,6 +20,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     compile 'com.android.support:appcompat-v7:25.3.0'
     compile project(path: ':bottom-nav-bar')
 }

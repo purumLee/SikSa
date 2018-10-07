@@ -18,7 +18,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="me.riddhimanadib.library.BottomBarHolderActivity"></activity>
+        <activity android:name="me.riddhimanadib.library.BottomBarHolderActivity" />
+        <activity android:name=".Information"></activity>
     </application>
 
 </manifest>

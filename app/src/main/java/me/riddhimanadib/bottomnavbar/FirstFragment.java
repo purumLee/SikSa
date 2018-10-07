@@ -1,8 +1,13 @@
 package me.riddhimanadib.bottomnavbar;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +26,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.sql.Array;
 import java.util.ArrayList;
 
 /**
@@ -39,9 +45,12 @@ public class FirstFragment extends Fragment {
     ArrayList<String> Desc = new ArrayList<>();
 
     String key="Gtop56GhMRShnw3G5lfZpROYqvlj9Impr08eSCr6AXj%2BbqIGzCSS6vNipej1RmsDS5PepYa1TDj0h3s5jPQbnA%3D%3D";
+    String queryUrl = null;
 
-    boolean inDesc = false, inPlant = false;
-    String desc = null, plant = null;
+    boolean inDesc = false, inServ = false, inCont1 = false, inCont2 = false, inCont3 = false, inCont4 = false,
+            inCont5 = false,  inCont6 = false,  inCont7 = false,  inCont8 = false,  inCont9 = false, inPlant = false;
+    String desc = null, serv = null, cont1 = null, cont2 = null, cont3 = null, cont4 = null,
+            cont5 = null, cont6 = null, cont7 = null, cont8 = null, cont9 = null, plant = null;
 
     public static FirstFragment newInstance() {
         return new FirstFragment();
@@ -55,16 +64,66 @@ public class FirstFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        StrictMode.enableDefaults();
+
         View view = inflater.inflate(R.layout.fragment_first, null) ;
         edit = (EditText) view.findViewById(R.id.edit);
         button = (Button) view.findViewById(R.id.button);
         adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, AL);
         listview = (ListView) view.findViewById(R.id.listview1) ;
+        listview.setAdapter(adapter) ;
+
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable edit) {
+                String str = edit.toString();
+                if (str.length() > 0){
+                    //button.setEnabled(true);
+                    //AL.clear();
+                    //Desc.clear();
+                    button.callOnClick();
+                    //getData();
+                }
+                else {
+                    AL.clear();
+                    Desc.clear();
+                    listview.setAdapter(adapter) ;
+                    //button.setEnabled(false);
+                }
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+            }
+        };
+
+        edit.addTextChangedListener(textWatcher);
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View v, int position, long id) {
-                edit.setText(Desc.get(position));
+                //edit.setText(Desc.get(position));
+                getDetailData(position);
+                //edit.setText(Integer.toString(position));
+                //edit.setText(serv);
+                Intent intent = new Intent(getActivity(), Information.class);
+                intent.putExtra("food", Desc.get(position));
+                intent.putExtra("serv", serv);
+                intent.putExtra("cont1", cont1);
+                intent.putExtra("cont2", cont2);
+                intent.putExtra("cont3", cont3);
+                intent.putExtra("cont4", cont4);
+                intent.putExtra("cont5", cont5);
+                intent.putExtra("cont6", cont6);
+                intent.putExtra("cont7", cont7);
+                intent.putExtra("cont8", cont8);
+                intent.putExtra("cont9", cont9);
+                intent.putExtra("plant", plant);
+                startActivity(intent);
             }
         }) ;
 
@@ -73,27 +132,32 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View v)
             {
+                AL.clear();
+                Desc.clear();
+                getData();
                 //Android 4.0 이상 부터는 네트워크를 이용할 때 반드시 Thread 사용해야 함
-                new Thread(new Runnable() {
+                /*new Thread(new Runnable() {
 
                     @Override
                     public void run() {
                         // TODO Auto-generated method stub
-                        AL.clear();
-                        Desc.clear();
+                        try {// 스레드에게 수행시킬 동작들 구현
+                            Thread.sleep(2000); // 1초간 Thread를 잠재운다
+                            } catch (InterruptedException e) {e.printStackTrace();}
                         getData();
-
                         //UI Thread(Main Thread)를 제외한 어떤 Thread도 화면을 변경할 수 없기때문에
                         //runOnUiThread()를 이용하여 UI Thread가 TextView 글씨 변경하도록 함
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 // TODO Auto-generated method stub
-                                listview.setAdapter(adapter) ;
+                                //listview.setAdapter(adapter) ;
+                                adapter.notifyDataSetChanged();
                             }
                         });
                     }
-                }).start();
+                }).start();*/
+                adapter.notifyDataSetChanged();
             }
         });
 
@@ -165,11 +229,73 @@ public class FirstFragment extends Fragment {
         //String query = "%EC%A0%84%EB%A0%A5%EB%A1%9C";
         //String query = "%EB%B0%94%EB%82%98%EB%82%98%EC%B9%A9";
 
-        String queryUrl="http://apis.data.go.kr/1470000/FoodNtrIrdntInfoService/getFoodNtrItdntList?"//요청 URL
+        queryUrl="http://apis.data.go.kr/1470000/FoodNtrIrdntInfoService/getFoodNtrItdntList?"//요청 URL
                 //+"&pageNo=1&numOfRows=1000&ServiceKey=" + key
                 +"&pageNo=1&numOfRows=100&ServiceKey=" + key
                 +"&desc_kor="+location;
 
+        try {
+            URL url= new URL(queryUrl);//문자열로 된 요청 url을 URL 객체로 생성.
+            InputStream is= url.openStream(); //url위치로 입력스트림 연결
+
+            XmlPullParserFactory factory= XmlPullParserFactory.newInstance();
+            XmlPullParser xpp= factory.newPullParser();
+            //xpp.setInput( new InputStreamReader(is, "UTF-8") ); //inputstream 으로부터 xml 입력받기
+            xpp.setInput( new InputStreamReader(is));
+
+
+            String tag;
+
+            xpp.next();
+            int eventType= xpp.getEventType();
+
+            while( eventType != XmlPullParser.END_DOCUMENT ) {
+                switch (eventType) {
+                    case XmlPullParser.START_DOCUMENT:
+                        break;
+
+                    case XmlPullParser.START_TAG:
+                        tag = xpp.getName();//테그 이름 얻어오기
+                        if (tag.equals("item")) ;// 첫번째 검색결과
+                        if (tag.equals("DESC_KOR")) {
+                            inDesc = true;
+                        }
+                        if (tag.equals("ANIMAL_PLANT")) {
+                            inPlant = true;
+                        }
+                        break;
+
+                    case XmlPullParser.TEXT:
+                        if (inDesc) {
+                            desc = xpp.getText();
+                            Desc.add(desc);
+                            inDesc = false;
+                        }
+                        if (inPlant) {
+                            plant = xpp.getText();
+                            inPlant = false;
+                        }
+                        break;
+
+                    case XmlPullParser.END_TAG:
+                        tag = xpp.getName(); //테그 이름 얻어오기
+                        if (tag.equals("item")) {
+                            if (plant.equals("\n"))
+                                AL.add(desc);
+                            else
+                                AL.add("[" + plant + "] " + desc);
+                        }
+                        break;
+                }
+                eventType= xpp.next();
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch blocke.printStackTrace();
+        }
+    }
+
+    void getDetailData(int a){
+        int count = 0;
         try {
             URL url= new URL(queryUrl);//문자열로 된 요청 url을 URL 객체로 생성.
             InputStream is= url.openStream(); //url위치로 입력스트림 연결
@@ -193,19 +319,81 @@ public class FirstFragment extends Fragment {
                     case XmlPullParser.START_TAG:
                         tag= xpp.getName();//테그 이름 얻어오기
                         if(tag.equals("item")) ;// 첫번째 검색결과
-                        if(tag.equals("DESC_KOR")){
-                            inDesc = true;
+                        if(tag.equals("SERVING_WT") && (count == a)){
+                            inServ = true;
                         }
-                        if(tag.equals("ANIMAL_PLANT")){
+                        if(tag.equals("NUTR_CONT1") && (count == a)){
+                            inCont1 = true;
+                        }
+                        if(tag.equals("NUTR_CONT2") && (count == a)){
+                            inCont2 = true;
+                        }
+                        if(tag.equals("NUTR_CONT3") && (count == a)){
+                            inCont3 = true;
+                        }
+                        if(tag.equals("NUTR_CONT4") && (count == a)){
+                            inCont4 = true;
+                        }
+                        if(tag.equals("NUTR_CONT5") && (count == a)){
+                            inCont5 = true;
+                        }
+                        if(tag.equals("NUTR_CONT6") && (count == a)){
+                            inCont6 = true;
+                        }
+                        if(tag.equals("NUTR_CONT7") && (count == a)){
+                            inCont7 = true;
+                        }
+                        if(tag.equals("NUTR_CONT8") && (count == a)){
+                            inCont8 = true;
+                        }
+                        if(tag.equals("NUTR_CONT9") && (count == a)){
+                            inCont9 = true;
+                        }
+                        if(tag.equals("ANIMAL_PLANT") && (count == a)){
                             inPlant = true;
                         }
                         break;
 
                     case XmlPullParser.TEXT:
-                        if(inDesc){
-                            desc = xpp.getText();
-                            Desc.add(desc);
-                            inDesc = false;
+                        if(inServ){
+                            serv = xpp.getText();
+                            inServ = false;
+                        }
+                        if(inCont1){
+                            cont1 = xpp.getText();
+                            inCont1 = false;
+                        }
+                        if(inCont2){
+                            cont2 = xpp.getText();
+                            inCont2 = false;
+                        }
+                        if(inCont3){
+                            cont3 = xpp.getText();
+                            inCont3 = false;
+                        }
+                        if(inCont4){
+                            cont4 = xpp.getText();
+                            inCont4 = false;
+                        }
+                        if(inCont5){
+                            cont5 = xpp.getText();
+                            inCont5 = false;
+                        }
+                        if(inCont6){
+                            cont6 = xpp.getText();
+                            inCont6 = false;
+                        }
+                        if(inCont7){
+                            cont7 = xpp.getText();
+                            inCont7 = false;
+                        }
+                        if(inCont8){
+                            cont8 = xpp.getText();
+                            inCont8 = false;
+                        }
+                        if(inCont9){
+                            cont9 = xpp.getText();
+                            inCont9 = false;
                         }
                         if(inPlant){
                             plant = xpp.getText();
@@ -216,10 +404,7 @@ public class FirstFragment extends Fragment {
                     case XmlPullParser.END_TAG:
                         tag= xpp.getName(); //테그 이름 얻어오기
                         if(tag.equals("item")){
-                            if(plant.equals("\n"))
-                                AL.add(desc);
-                            else
-                                AL.add("["+plant+"] "+desc);
+                            count++;
                         }
                         break;
                 }
@@ -229,5 +414,4 @@ public class FirstFragment extends Fragment {
             // TODO Auto-generated catch blocke.printStackTrace();
         }
     }
-
 }
