@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/SikSa.iml" filepath="$PROJECT_DIR$/SikSa.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/bottom-nav-bar/bottom-nav-bar.iml" filepath="$PROJECT_DIR$/bottom-nav-bar/bottom-nav-bar.iml" />
-      <module fileurl="file://$PROJECT_DIR$/siksa.iml" filepath="$PROJECT_DIR$/siksa.iml" />
+      <module fileurl="file://$PROJECT_DIR$/horizontalcalendar/horizontalcalendar.iml" filepath="$PROJECT_DIR$/horizontalcalendar/horizontalcalendar.iml" />
     </modules>
   </component>
 </project>

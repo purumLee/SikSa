@@ -18,7 +18,7 @@ public class MainActivity extends BottomBarHolderActivity implements FirstFragme
 
         NavigationPage page1 = new NavigationPage("검색", ContextCompat.getDrawable(this, R.drawable.ic_search), FirstFragment.newInstance());
         NavigationPage page2 = new NavigationPage("카테고리", ContextCompat.getDrawable(this, R.drawable.ic_category), SecondFragment.newInstance());
-        NavigationPage page3 = new NavigationPage("캘린더", ContextCompat.getDrawable(this, R.drawable.ic_calendar), ThirdFragment.newInstance());
+        NavigationPage page3 = new NavigationPage("캘린더", ContextCompat.getDrawable(this, R.drawable.ic_calendar), SampleFragment.newInstance());
         NavigationPage page4 = new NavigationPage("마이페이지", ContextCompat.getDrawable(this, R.drawable.ic_my), FourthFragment.newInstance());
 
         List<NavigationPage> navigationPages = new ArrayList<>();
