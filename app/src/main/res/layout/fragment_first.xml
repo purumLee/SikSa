@@ -22,14 +22,49 @@
             android:layout_height="match_parent"
             android:text="search"
             android:textSize="12sp" />
-
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/listview1"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-    </ListView>
+        android:layout_height="match_parent"
+        android:id="@+id/frame">
+
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/default_state">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="300dp"
+                    android:layout_height="match_parent"
+                    android:text="최근검색어"/>
+
+                <Button
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:text="전체삭제"
+                    android:id="@+id/delete_all"/>
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/previousList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+            </ListView>
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/searchList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        </ListView>
+    </FrameLayout>
+
 
     <TextView
         android:layout_width="match_parent"
@@ -37,5 +72,4 @@
         android:gravity="center"
         android:text="First Fragment"
         android:textColor="#000000" />
-
 </LinearLayout>

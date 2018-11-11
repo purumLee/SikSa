@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -15,8 +18,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -39,10 +51,16 @@ public class FirstFragment extends Fragment {
 
     EditText edit;
     Button button;
-    ListView listview;
+    Button delete;
+    ListView searchList;
+    ListView recentList;
     ArrayAdapter adapter;
+    PreviousAdapter recent;
     ArrayList<String> AL = new ArrayList<>();
     ArrayList<String> Desc = new ArrayList<>();
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference databaseReference = database.getReference();
 
     String key="Gtop56GhMRShnw3G5lfZpROYqvlj9Impr08eSCr6AXj%2BbqIGzCSS6vNipej1RmsDS5PepYa1TDj0h3s5jPQbnA%3D%3D";
     String queryUrl = null;
@@ -69,9 +87,69 @@ public class FirstFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_first, null) ;
         edit = (EditText) view.findViewById(R.id.edit);
         button = (Button) view.findViewById(R.id.button);
-        adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, AL);
-        listview = (ListView) view.findViewById(R.id.listview1) ;
-        listview.setAdapter(adapter) ;
+        delete = (Button) view.findViewById(R.id.delete_all);
+        adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, new ArrayList<String>());
+        //recent = new PreviousAdapter2(getContext(), R.layout.previous_list, new ArrayList<PreviousList>(), this);
+        recent = new PreviousAdapter();
+        searchList = (ListView) view.findViewById(R.id.searchList);
+        recentList = (ListView) view.findViewById(R.id.previousList);
+        //listview.setAdapter(adapter);
+        searchList.setAdapter(adapter);
+        recentList.setAdapter(recent);
+
+        final FrameLayout frame = (FrameLayout) view.findViewById(R.id.frame);
+        final LinearLayout defaultView = (LinearLayout) view.findViewById(R.id.default_state);
+        frame.removeView(searchList);
+
+        //recent.add("1");
+        //databaseReference.push().setValue("1");
+
+        databaseReference.child("user").child("recent").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                recent.clear();
+                for (DataSnapshot testData : dataSnapshot.getChildren()){
+
+                    //String test = testData.child("food").child("user").child("20181101").getValue().toString();
+                    String test = testData.getValue().toString();
+                    recent.add(test);
+                }
+                recent.notifyDataSetChanged();
+                recentList.setSelection(adapter.getCount() - 1);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        final ChildEventListener removeData = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                dataSnapshot.getRef().removeValue();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
 
         TextWatcher textWatcher = new TextWatcher() {
             @Override
@@ -81,14 +159,23 @@ public class FirstFragment extends Fragment {
                     //button.setEnabled(true);
                     //AL.clear();
                     //Desc.clear();
+                    //searchList.setAdapter(adapter);
+                    frame.removeAllViews();
+                    frame.addView(searchList);
                     button.callOnClick();
                     //getData();
                 }
                 else {
+                    /*adapter.clear();
                     AL.clear();
                     Desc.clear();
-                    listview.setAdapter(adapter) ;
-                    //button.setEnabled(false);
+                    //listview.setAdapter(adapter) ;
+                    adapter.notifyDataSetChanged();
+                    //button.setEnabled(false);*/
+
+                    //searchList.setAdapter(recent);
+                    frame.removeAllViews();
+                    frame.addView(defaultView);
                 }
             }
             @Override
@@ -103,11 +190,13 @@ public class FirstFragment extends Fragment {
 
         edit.addTextChangedListener(textWatcher);
 
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        searchList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View v, int position, long id) {
                 //edit.setText(Desc.get(position));
                 getDetailData(position);
+                databaseReference.child("user").child("recent").push().setValue(Desc.get(position));
+                recent.removeListener();
                 //edit.setText(Integer.toString(position));
                 //edit.setText(serv);
                 Intent intent = new Intent(getActivity(), Information.class);
@@ -127,11 +216,20 @@ public class FirstFragment extends Fragment {
             }
         }) ;
 
+        recentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                edit.setText(recent.getItem(i).getFood());
+                edit.setSelection(edit.getText().length());
+            }
+        });
+
         button.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
+                adapter.clear();
                 AL.clear();
                 Desc.clear();
                 getData();
@@ -158,6 +256,14 @@ public class FirstFragment extends Fragment {
                     }
                 }).start();*/
                 adapter.notifyDataSetChanged();
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //databaseReference.child("user").child("recent").addChildEventListener(removeData);
+                databaseReference.child("user").child("recent").removeValue();
             }
         });
 
@@ -281,9 +387,11 @@ public class FirstFragment extends Fragment {
                         tag = xpp.getName(); //테그 이름 얻어오기
                         if (tag.equals("item")) {
                             if (plant.equals("\n"))
-                                AL.add(desc);
+                                //AL.add(desc);
+                                adapter.add(desc);
                             else
-                                AL.add("[" + plant + "] " + desc);
+                                //AL.add("[" + plant + "] " + desc);
+                                adapter.add("[" + plant + "] " + desc);
                         }
                         break;
                 }
