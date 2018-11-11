@@ -1,1 +1,1 @@
-include ':app', ':bottom-nav-bar', ':horizontalcalendar'
+include ':app', ':bottom-nav-bar', ':horizontalcalendar', ':sweetsheet', ':sweetapp'

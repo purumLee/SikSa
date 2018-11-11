@@ -11,6 +11,8 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/bottom-nav-bar" />
             <option value="$PROJECT_DIR$/horizontalcalendar" />
+            <option value="$PROJECT_DIR$/sweetapp" />
+            <option value="$PROJECT_DIR$/sweetsheet" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

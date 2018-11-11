@@ -3,9 +3,15 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SikSa.iml" filepath="$PROJECT_DIR$/SikSa.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SikSa.iml" filepath="$PROJECT_DIR$/SikSa.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/bottom-nav-bar/bottom-nav-bar.iml" filepath="$PROJECT_DIR$/bottom-nav-bar/bottom-nav-bar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bottom-nav-bar/bottom-nav-bar.iml" filepath="$PROJECT_DIR$/bottom-nav-bar/bottom-nav-bar.iml" />
       <module fileurl="file://$PROJECT_DIR$/horizontalcalendar/horizontalcalendar.iml" filepath="$PROJECT_DIR$/horizontalcalendar/horizontalcalendar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/horizontalcalendar/horizontalcalendar.iml" filepath="$PROJECT_DIR$/horizontalcalendar/horizontalcalendar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sweetapp/sweetapp.iml" filepath="$PROJECT_DIR$/sweetapp/sweetapp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sweetsheet/sweetsheet.iml" filepath="$PROJECT_DIR$/sweetsheet/sweetsheet.iml" />
     </modules>
   </component>
 </project>
